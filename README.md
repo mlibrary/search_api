@@ -63,16 +63,14 @@ When the type of a value is STRING it should not contain any HTML. The client is
   // All the usual data ('messages', 'request', etc) is included. See above for
   // how this information is organized.
 
-  'total_available': INT | UNDEFINED
+  'total_available': INT | NULL
     // How many total records are available for this particular request.
-    // If left undefined it is assumed
+    // If NULL it is unknown how many are available.
 
   'datastore': OBJECT
     // The object for the datastore that is responding.
     // This is sent in the response since it may have new default facet values
     // based on the search you just did.
-    // Note: this may not be the same datastore that you sent the query to. In
-    // the case of a multisearch you may have been sent to a new datastore.
 
   'new_request': OBJECT
     // If the client wants to redo the search with a different pagination, they
@@ -94,23 +92,17 @@ When the type of a value is STRING it should not contain any HTML. The client is
   // All the usual data ('messages', 'request', etc) is included. See above for
   // how this information is organized.
 
-  'new_request': OBJECT
-    // If the client wants to redo the search with a different pagination, they
-    // should send this version of the request object with modified start and
-    // count values.
+  'facet': OBJECT
+    // The object for the facet the query was done on.
+    // This is sent in the response since it may have new information based on
+    // the search you just did.
 
-  'total_available': INT | UNDEFINED
-    // How many total records are available for this particular request.
+  'total_available': INT | NULL
+    // How many total values are available for this particular facet.
+    // If NULL it is unknown how many are available.
 
-  facet: OBJECT
-    // The object for the datastore that is responding.
-    // This is sent in the response since it may have new default facet values
-    // based on the search you just did.
-    // Note: this may not be the same datastore that you sent the query to. In
-    // the case of a multisearch you may have been sent to a new datastore.
-
-  // The 'response' field should contain an array of record objects. See below
-  // for how those are formatted.
+  // The 'response' field should contain an array of facet value objects. See
+  // below for how those are formatted.
 }
 ```
 
@@ -175,11 +167,11 @@ Datastore Objects contain all the information necessary to create an interface f
   ]
 
   'facets': ARRAY
-    // An array of facet objects (see below).
+    // An array of facet objects. See below for how those are formatted.
 
-        'settings': [
-          // Array of objects which tell you what settings are available on this
-          // datastore.
+  'settings': [
+    // Array of objects which tell you what settings are available on this
+    // datastore.
     {
       'uid': STRING
         // A machine readable identifier for this particular setting.
@@ -214,20 +206,9 @@ Datastore Objects contain all the information necessary to create an interface f
   'default_sort': STRING
     // The 'uid' for the default sort type.
 
-  'values': [
-    // Array of possible values for this facet formatted as follows:
-    {
-      'value': ANYTHING
-        // The value that should be sent to the server.
-
-      'name': STRING
-        // A human readable name for this particular value.
-
-      'count': INT
-        // The number of results which have this value.
-        // If not known, do not create the 'count' key/value pair.
-    }
-  ]
+  'values': ARRAY
+    // The array contains facet value objects.
+    // See below for how those are formatted.
 
   'fixed': BOOLEAN
     // Whether or not this facet can be edited by users.
@@ -238,15 +219,31 @@ Datastore Objects contain all the information necessary to create an interface f
 
   'more': URL | false
     // If 'more' is set to a URL, there are more facet values. If it is set
-    // to false then the list of values is complete.
-    // A facet value request object (see below) is sent to this URL to get
-    // more values for this facet.
+    // to false then the list of values is complete. A facet value request
+    // object is sent to this URL to get more values for this facet. See below
+    // for how those are formatted.
 
   'sorts': ARRAY
     // An array containing the various ways the facet values can be sorted
     // such as alphabetical, by result count, etc.
     // If there are no sorts available, this array should be empty.
     // See below for how sort objects are formatted.
+}
+```
+
+### Facet Value Objects
+
+```javascript
+{
+  'value': ANYTHING
+    // The value that should be sent to the server.
+
+  'name': STRING
+    // A human readable name for this particular value.
+
+  'count': INT
+    // The number of results which have this value.
+    // If not known, do not create the 'count' key/value pair.
 }
 ```
 
@@ -351,9 +348,7 @@ The client only needs to know one URL. That is the URL which they can send a GET
     // as in the case of a multisearch search.
 
   'start': INT
-    // The index of the item you want to start with.
-    // 0 means you want the first set of results, while any other number means
-    // you want to load another page of results.
+    // The index of the item you want to start with. 0 is the first index.
 
   'count': INT
     // The number of results you are requesting.
@@ -387,10 +382,23 @@ The client only needs to know one URL. That is the URL which they can send a GET
 
 ```javascript
 {
-  // Same as a datastore query except for the following additions:
-
-  facet_uid: STRING;
+  'uid': STRING;
   // The 'uid' for the facet that you are requesting.
+
+  'query': OBJECT;
+  // The query this facet is associated with.
+  // Should be formatted the same as a datastore query.
+
+  'start': INT
+    // The index of the item you want to start with. 0 is the first index.
+
+  'count': INT
+    // The number of results you are requesting.
+    // Note: the server should never send more results than the client
+    // requested. However, the server may send fewer results than requested.
+
+  'sort': STRING
+    // The 'uid' for the sort you want to use.
 }
 ```
 
