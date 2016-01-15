@@ -7,7 +7,9 @@ When the type of a value is STRING it should not contain any HTML. The client is
 
 ## Objects from the Server
 
-### Response Format
+### Responses
+
+#### Basic Format
 
 ```javascript
 {
@@ -51,6 +53,64 @@ When the type of a value is STRING it should not contain any HTML. The client is
     // or object should empty.
     // Each request type should only be able to return an array or an object,
     // not either. Example: datastore queries return an array, while 
+}
+```
+
+#### Datastore Query Responses
+
+```javascript
+{
+  // All the usual data ('messages', 'request', etc) is included. See above for
+  // how this information is organized.
+
+  'total_available': INT | UNDEFINED
+    // How many total records are available for this particular request.
+    // If left undefined it is assumed
+
+  'datastore': OBJECT
+    // The object for the datastore that is responding.
+    // This is sent in the response since it may have new default facet values
+    // based on the search you just did.
+    // Note: this may not be the same datastore that you sent the query to. In
+    // the case of a multisearch you may have been sent to a new datastore.
+
+  'new_request': OBJECT
+    // If the client wants to redo the search with a different pagination, they
+    // should send this version of the request object with modified start and
+    // count values.
+    // This is used for things like multisearches, where initially the datastore
+    // object given was a simplified version, but the datastore object returned
+    // by the query is more complicated and may use different formatting.
+
+  // The 'response' field should contain an array of record objects. See below
+  // for how those are formatted.
+}
+```
+
+#### Facet Query Responses
+
+```javascript
+{
+  // All the usual data ('messages', 'request', etc) is included. See above for
+  // how this information is organized.
+
+  'new_request': OBJECT
+    // If the client wants to redo the search with a different pagination, they
+    // should send this version of the request object with modified start and
+    // count values.
+
+  'total_available': INT | UNDEFINED
+    // How many total records are available for this particular request.
+
+  facet: OBJECT
+    // The object for the datastore that is responding.
+    // This is sent in the response since it may have new default facet values
+    // based on the search you just did.
+    // Note: this may not be the same datastore that you sent the query to. In
+    // the case of a multisearch you may have been sent to a new datastore.
+
+  // The 'response' field should contain an array of record objects. See below
+  // for how those are formatted.
 }
 ```
 
@@ -215,64 +275,6 @@ Datastore Objects contain all the information necessary to create an interface f
 }
 ```
 
-### Datastore Query Responses
-
-```javascript
-{
-  // All the usual data ('messages', 'request', etc) is included. See above for
-  // how this information is organized.
-
-  'total_available': INT | UNDEFINED
-    // How many total records are available for this particular request.
-    // If left undefined it is assumed
-
-  'datastore': OBJECT
-    // The object for the datastore that is responding.
-    // This is sent in the response since it may have new default facet values
-    // based on the search you just did.
-    // Note: this may not be the same datastore that you sent the query to. In
-    // the case of a multisearch you may have been sent to a new datastore.
-
-  'new_request': OBJECT
-    // If the client wants to redo the search with a different pagination, they
-    // should send this version of the request object with modified start and
-    // count values.
-    // This is used for things like multisearches, where initially the datastore
-    // object given was a simplified version, but the datastore object returned
-    // by the query is more complicated and may use different formatting.
-
-  // The 'response' field should contain an array of record objects. See below
-  // for how those are formatted.
-}
-```
-
-### Facet Query Responses
-
-```javascript
-{
-  // All the usual data ('messages', 'request', etc) is included. See above for
-  // how this information is organized.
-
-  'new_request': OBJECT
-    // If the client wants to redo the search with a different pagination, they
-    // should send this version of the request object with modified start and
-    // count values.
-
-  'total_available': INT | UNDEFINED
-    // How many total records are available for this particular request.
-
-  facet: OBJECT
-    // The object for the datastore that is responding.
-    // This is sent in the response since it may have new default facet values
-    // based on the search you just did.
-    // Note: this may not be the same datastore that you sent the query to. In
-    // the case of a multisearch you may have been sent to a new datastore.
-
-  // The 'response' field should contain an array of record objects. See below
-  // for how those are formatted.
-}
-```
-
 ### Record Objects
 
 ```javascript
@@ -331,7 +333,9 @@ Datastore Objects contain all the information necessary to create an interface f
 
 The client only needs to know one URL. That is the URL which they can send a GET request to to get all the datastores the
 
-### Datastore Queries
+### Queries
+
+#### Datastore Queries
 
 ```javascript
 {
@@ -379,6 +383,17 @@ The client only needs to know one URL. That is the URL which they can send a GET
 }
 ```
 
+#### Facet Queries
+
+```javascript
+{
+  // Same as a datastore query except for the following additions:
+
+  facet_uid: STRING;
+  // The 'uid' for the facet that you are requesting.
+}
+```
+
 ### Field Tree Nodes
 
 ```javascript
@@ -410,16 +425,5 @@ The client only needs to know one URL. That is the URL which they can send a GET
     // then that group of nodes has the NOT on it. For example, if the children
     // of a 'NOT' are "something", "else" and "blue" then the serialization is:
     // NOT("something" AND "else" AND "blue")
-}
-```
-
-### Facet Requests
-
-```javascript
-{
-  // Same as a datastore query except for the following additions:
-
-  facet_uid: STRING;
-  // The 'uid' for the facet that you are requesting.
 }
 ```
