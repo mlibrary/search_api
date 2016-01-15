@@ -9,7 +9,7 @@ When the type of a value is STRING it should not contain any HTML. The client is
 
 ### Responses
 
-#### Basic Format
+All responses from the server use this basic formatting:
 
 ```javascript
 {
@@ -56,13 +56,14 @@ When the type of a value is STRING it should not contain any HTML. The client is
 }
 ```
 
+In addition to the following more specialized responses, the server must have a URL that which—when hit with a `GET` request—will return a basic response where the `response` field is an array containing a datastore object for every single datastore that the server can run queries against.
+
 #### Datastore Query Responses
+
+The basic response formatting is extended with the following when the server is responding to a datastore query (a query for records from a datastore).
 
 ```javascript
 {
-  // All the usual data ('messages', 'request', etc) is included. See above for
-  // how this information is organized.
-
   'total_available': INT | NULL
     // How many total records are available for this particular request.
     // If NULL it is unknown how many are available.
@@ -86,6 +87,8 @@ When the type of a value is STRING it should not contain any HTML. The client is
 ```
 
 #### Facet Query Responses
+
+The basic response formatting is extended with the following when the server is responding to a facet query (a query for more values for a particular facet of a search).
 
 ```javascript
 {
@@ -185,6 +188,8 @@ Datastore Objects contain all the information necessary to create an interface f
 
 ### Facet Objects
 
+Facet objects describe all of the details of a particular facet of a search, give the first set of values for that facet, and give a URL for requesting more values if more are available.
+
 ```javascript
 {
   'uid': STRING
@@ -207,7 +212,7 @@ Datastore Objects contain all the information necessary to create an interface f
     // The 'uid' for the default sort type.
 
   'values': ARRAY
-    // The array contains facet value objects.
+    // The array contains the first set facet value objects.
     // See below for how those are formatted.
 
   'fixed': BOOLEAN
@@ -233,6 +238,8 @@ Datastore Objects contain all the information necessary to create an interface f
 
 ### Facet Value Objects
 
+All of the information about a particular possible value for a facet.
+
 ```javascript
 {
   'value': ANYTHING
@@ -248,6 +255,8 @@ Datastore Objects contain all the information necessary to create an interface f
 ```
 
 ### Sort Objects
+
+All of the information about a possible way to sort facet values or records.
 
 ```javascript
 {
@@ -273,6 +282,8 @@ Datastore Objects contain all the information necessary to create an interface f
 ```
 
 ### Record Objects
+
+Either a complete set of information about one record, or a partial set with a URL which will return the complete set.
 
 ```javascript
 {
@@ -328,11 +339,13 @@ Datastore Objects contain all the information necessary to create an interface f
 
 ## OBJECTS FROM THE CLIENT
 
-The client only needs to know one URL. That is the URL which they can send a GET request to to get all the datastores the
-
 ### Queries
 
+In addition to the following queries, the server has a URL that—when hit with a `GET` request—gives the client a response containing an array of all the datastores the client can run queries against.
+
 #### Datastore Queries
+
+This object represents a query against a specific datastore. The object must be sent via the `POST` method to the URL specified by the datastore.
 
 ```javascript
 {
@@ -380,13 +393,15 @@ The client only needs to know one URL. That is the URL which they can send a GET
 
 #### Facet Queries
 
+This object represents a request to get more values for a given facet of a specific search. The object must be sent via the `POST` method to the URL specified by the facet.
+
 ```javascript
 {
   'uid': STRING;
   // The 'uid' for the facet that you are requesting.
 
   'query': OBJECT;
-  // The query this facet is associated with.
+  // The datastore query this facet is associated with.
   // Should be formatted the same as a datastore query.
 
   'start': INT
@@ -403,6 +418,8 @@ The client only needs to know one URL. That is the URL which they can send a GET
 ```
 
 ### Field Tree Nodes
+
+Field trees are represented with a root object which is formatted thusly:
 
 ```javascript
 {
