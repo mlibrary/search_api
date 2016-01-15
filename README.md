@@ -198,7 +198,7 @@ Datastore Objects contain all the information necessary to create an interface f
     // A machine readable identifier for this sort order.
     // Only contains word characters (letters, numbers, underscores).
 
-  'metadata'" {
+  'metadata': {
     'name': STRING
       // A human readable name for the sort order.
 
