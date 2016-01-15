@@ -48,7 +48,7 @@ When the type of a value is STRING it should not contain any HTML. The client is
     // A copy of the object sent to the server to generate this request.
     // If no object was sent, this field may be excluded.
 
-  'response': ARRAY | @
+  'response': ARRAY | OBJECT
     // When there is no result of the request or an error occurred the array
     // or object should empty.
     // Each request type should only be able to return an array or an object,
