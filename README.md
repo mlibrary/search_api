@@ -377,9 +377,9 @@ This object represents a query against a specific datastore. The object must be 
   'facets': OBJECT
     // An object which contains the facets that should be applied to the search.
     // Each facet is represented as a key/value pair, where the key is the 'uid'
-    // of the facet as defined by the datastore object and where the value is
-    // the value given by the server, which could be any form of data (boolean,
-    // string, object, array, number, etc).
+    // of the facet as defined by the datastore object, and the value is an
+    // array of whatever facet values have been selected by the user. The facet
+    // values can be anything (boolean, string, object, array, number, etc).
 
   'sort': STRING
     // The 'uid' for the sort you want to use.
