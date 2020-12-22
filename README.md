@@ -331,7 +331,23 @@ Either a complete set of information about one record, or a partial set with a U
         // Whether or not the name contains HTML.
         // Used to determine if it this value needs to be escaped.
     }
-  ]
+  ],
+  'metadata': {
+    DISPLAY_TYPE: {
+    },
+  },
+  'header': {
+    DISPLAY_TYPE: {
+      REGION: [
+        {
+          'text': 'Text goes here',
+          'href': 'href for links',
+          'icon': 'for icon content',
+          'Intent': 'for the badge / lozenge things'
+        }
+      ]
+    }
+  }
 }
 ```
 
