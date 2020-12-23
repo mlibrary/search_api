@@ -332,26 +332,91 @@ Either a complete set of information about one record, or a partial set with a U
         // Used to determine if it this value needs to be escaped.
     }
   ],
-  'metadata': {
-    DISPLAY_TYPE: {
-    },
-  },
-  'header': {
-    DISPLAY_TYPE: {
-      REGION: [
-        {
-          'text': 'Text goes here',
-          'href': 'href for links',
-          'icon': 'for icon content',
-          'Intent': 'for the badge / lozenge things'
-        }
-      ]
-    }
+  'metadata': OBJECT,
+  'header': OBJECT
+}
+```
+
+### Metadata Objects
+
+```json
+{
+  'preview': ARRAY,
+  'medium': ARRAY,
+  'full': ARRAY
+}
+```
+
+### Metadata Item
+
+```javascript
+{
+  'term': STRING,
+  'termPlural': STRING,
+  'description': ARRAY
+}
+```
+
+### Metadata Item Description
+
+For plain text:
+
+```javascript
+{
+  'text': STRING
+}
+```
+
+For an href link:
+
+```javascript
+{
+  'text': STRING,
+   'href': STRING
+}
+```
+
+For a filtered search
+
+```javascript
+{
+  "text": STRING,
+  "search": {
+    "type": STRING,
+    "scope": STRING,
+    "value": STRING
   }
 }
 ```
 
+For a fielded query search
 
+```javascript
+{
+  "text": STRING,
+  "search": {
+    "type": STRING,
+    "scope": STRING,
+    "value": STRING
+  }
+}
+```
+
+With icon: Use icon names from Design System Iconography.
+
+```javascript
+{
+  "text": STRING,
+  "icon": STRING
+}
+```
+
+### Header objects
+```javascript
+{
+  
+}
+```
 
 ## OBJECTS FROM THE CLIENT
 
