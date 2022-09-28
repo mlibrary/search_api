@@ -454,6 +454,11 @@ This object represents a query against a specific datastore. The object must be 
     // into those fields, and how to combine them together.
     // An empty object should be sent when not sending any values.
     // See below for how this tree is formated
+    
+  'raw_query': STRING
+    // A string representing the raw query.  Client-side parsing is being
+    // phased out in favor of server-side parsing.  The server-side parser
+    // is currently (9/28/2022) used for a limited number of datastores.
 
   'facets': OBJECT
     // An object which contains the facets that should be applied to the search.
